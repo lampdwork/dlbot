@@ -1,0 +1,28 @@
+{
+  "name": "dlbot",
+  "version": "2.0.0",
+  "description": "Facebook Messenger Bot + Chat GPT",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "request": "^2.88.0"
+  },
+  "engines": {
+    "node": ">=10.x"
+  },
+  "repository": {
+    "url": "https://gitlab.com/lampd.work/dlbot.git"
+  },
+  "author": "Phan Dang Lam",
+  "license": "ISC",
+  "keywords": [
+    "messenger",
+    "webhook",
+    "chatgpt"
+  ]
+}
