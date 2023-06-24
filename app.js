@@ -22,6 +22,9 @@
 // Use dotenv to read .env vars into Node
 require('dotenv').config()
 
+const path = require('path')
+const fs = require('fs')
+
 // Imports dependencies and set up http server
 const request = require('request'),
   express = require('express'),
@@ -37,6 +40,14 @@ app.use(json())
 // Respond with 'Hello World' when a GET request is made to the homepage
 app.get('/', function (_req, res) {
   res.send('Hello World')
+})
+
+// Read the privacy policy HTML file
+const privacyPolicyPath = path.join(__dirname, 'privacy-policy.html')
+const privacyPolicy = fs.readFileSync(privacyPolicyPath, 'utf8')
+
+app.get('/privacy-policy', function (_req, res) {
+  res.send(privacyPolicy)
 })
 
 // Adds support for GET requests to our webhook
