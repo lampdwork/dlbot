@@ -24,6 +24,7 @@ require('dotenv').config()
 
 const path = require('path')
 const fs = require('fs')
+const chatGPTResponse = require('./chatGPT')
 
 // Imports dependencies and set up http server
 const request = require('request'),
@@ -114,15 +115,17 @@ app.post('/webhook', (req, res) => {
 })
 
 // Handles messages events
-function handleMessage(senderPsid, receivedMessage) {
+async function handleMessage(senderPsid, receivedMessage) {
   let response
 
   // Checks if the message contains text
   if (receivedMessage.text) {
     // Create the payload for a basic text message, which
     // will be added to the body of your request to the Send API
+    const gptRes = await chatGPTResponse(receivedMessage.text)
+
     response = {
-      text: `You sent the message: '${receivedMessage.text}'. Now send me an attachment!`
+      text: `${gptRes}`
     }
   } else if (receivedMessage.attachments) {
     // Get the URL of the message attachment
