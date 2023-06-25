@@ -59,7 +59,7 @@ const chatGPTResponse = async (message, userId, client) => {
       userId,
       role: 'assistant',
       content: res.text,
-      createdAt: new Date().getTime()
+      createdAt: new Date().getTime() + 1
     }
 
     await collection.insertMany([userMessage, assistantMessage])
