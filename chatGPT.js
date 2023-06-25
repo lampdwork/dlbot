@@ -37,6 +37,8 @@ const chatGPTResponse = async (message, userId, client) => {
       apiKey: process.env.OPENAI_API_KEY
     })
 
+    console.log(chatHistoryResults, 'chatHistoryResults')
+
     const res = await api.sendMessage(
       `Hãy trả lời tin nhắn của tôi dựa vào kiến thức của bạn hoặc tham khảo thêm thông tin từ lịch sử đoạn hội thoại của tôi và bạn. 
       Đây là lịch sử đoạn hội thoại của tôi và bạn. bạn có role là assistant, còn tôi có role là user, Đoạn hội thoại: ${JSON.stringify(
