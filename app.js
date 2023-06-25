@@ -100,8 +100,8 @@ app.post('/webhook', (req, res) => {
           handleMessage(senderPsid, webhookEvent.message)
         } else if (webhookEvent.postback) {
           handlePostback(senderPsid, webhookEvent.postback)
-        } else if (webhook_event.referral) {
-          handleIncoming(sender_psid, webhook_event.referral)
+        } else if (webhookEvent.referral) {
+          handleIncoming(sender_psid, webhookEvent.referral)
         }
       } else if (entry.changes) {
         processComments(entry.changes[0].value)
