@@ -9,12 +9,13 @@ const chatGPTResponse = async (message, userId, client) => {
   const database = client.db(dbName)
   const collection = database.collection(collectionName)
 
-  const chatHistoryResults = await collection
+  let chatHistoryResults = await collection
     .find({ userId })
     .sort({ createdAt: -1 })
     .limit(parseInt(limit))
-    .sort({ createdAt: 1 })
     .toArray()
+
+  chatHistoryResults?.reverse()
 
   const isEmptyChatHistory = !(chatHistoryResults?.length > 0)
 
