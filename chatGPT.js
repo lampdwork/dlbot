@@ -25,7 +25,7 @@ const chatGPTResponse = async (message, userId, client) => {
       role: 'assistant',
       content:
         'Tôi là DLBot được tạo ra bởi Đăng Lâm và được tích hợp ChatGPT để trả lời các câu hỏi của bạn',
-      createdAt: new Date()
+      createdAt: new Date().getTime()
     }
 
     chatHistoryResults.push(firstMess)
@@ -52,14 +52,14 @@ const chatGPTResponse = async (message, userId, client) => {
       userId,
       role: 'user',
       content: message,
-      createdAt: new Date()
+      createdAt: new Date().getTime()
     }
 
     const assistantMessage = {
       userId,
       role: 'assistant',
       content: res.text,
-      createdAt: new Date()
+      createdAt: new Date().getTime()
     }
 
     await collection.insertMany([userMessage, assistantMessage])
