@@ -22,6 +22,8 @@
 // Use dotenv to read .env vars into Node
 require('dotenv').config()
 
+const { MongoClient, ServerApiVersion } = require('mongodb')
+
 const path = require('path')
 const fs = require('fs')
 const chatGPTResponse = require('./chatGPT')
@@ -129,7 +131,11 @@ async function handleMessage(senderPsid, receivedMessage) {
   if (receivedMessage.text) {
     // Create the payload for a basic text message, which
     // will be added to the body of your request to the Send API
-    const gptRes = await chatGPTResponse(receivedMessage.text, senderPsid)
+    const gptRes = await chatGPTResponse(
+      receivedMessage.text,
+      senderPsid,
+      client
+    )
     response = {
       text: `${gptRes}`
     }
@@ -272,7 +278,21 @@ function processComments(comment) {
   )
 }
 
+const uri = process.env.ATLAS_URI
+const client = new MongoClient(uri)
+
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port)
+
+  async function run() {
+    console.log('Connecting to database...')
+
+    await client.connect()
+    console.log('Connected successfully to database')
+
+    // Make sure to call close() on your client to perform cleanup operations
+    // await client.close()
+  }
+  run().catch(console.dir)
 })
