@@ -29,7 +29,7 @@ const chatGPTResponse = async (message, userId, client) => {
 
     chatHistoryResults.push(firstMess)
 
-    collection.insertOne(firstMess)
+    await collection.insertOne(firstMess)
   }
 
   try {
@@ -61,9 +61,9 @@ const chatGPTResponse = async (message, userId, client) => {
       createdAt: new Date()
     }
 
-    collection.insertMany([userMessage, assistantMessage])
+    await collection.insertMany([userMessage, assistantMessage])
 
-    return res.text
+    return assistantMessage.content
   } catch (err) {
     console.log(err)
     return 'Sorry, I am having trouble communicating with my brain right now. Please try again later.'
