@@ -114,53 +114,65 @@ app.post('/webhook', (req, res) => {
   }
 })
 
+// Handles sender actions
+async function sendTypingStatus(senderPsid, receivedSenderAction) {
+  // Send the response message
+  callSendAPI(senderPsid, undefined, receivedSenderAction)
+}
+
 // Handles messages events
 async function handleMessage(senderPsid, receivedMessage) {
   let response
+  await sendTypingStatus(senderPsid, 'TYPING_ON')
 
   // Checks if the message contains text
   if (receivedMessage.text) {
     // Create the payload for a basic text message, which
     // will be added to the body of your request to the Send API
-    const gptRes = await chatGPTResponse(receivedMessage.text)
-
+    const gptRes = await chatGPTResponse(receivedMessage.text, senderPsid)
     response = {
       text: `${gptRes}`
     }
   } else if (receivedMessage.attachments) {
     // Get the URL of the message attachment
     let attachmentUrl = receivedMessage.attachments[0].payload.url
+    // response = {
+    //   attachment: {
+    //     type: 'template',
+    //     payload: {
+    //       template_type: 'generic',
+    //       elements: [
+    //         {
+    //           title: 'Is this the right picture?',
+    //           subtitle: 'Tap a button to answer.',
+    //           image_url: attachmentUrl,
+    //           buttons: [
+    //             {
+    //               type: 'postback',
+    //               title: 'Yes!',
+    //               payload: 'yes'
+    //             },
+    //             {
+    //               type: 'postback',
+    //               title: 'No!',
+    //               payload: 'no'
+    //             }
+    //           ]
+    //         }
+    //       ]
+    //     }
+    //   }
+    // }
+
     response = {
-      attachment: {
-        type: 'template',
-        payload: {
-          template_type: 'generic',
-          elements: [
-            {
-              title: 'Is this the right picture?',
-              subtitle: 'Tap a button to answer.',
-              image_url: attachmentUrl,
-              buttons: [
-                {
-                  type: 'postback',
-                  title: 'Yes!',
-                  payload: 'yes'
-                },
-                {
-                  type: 'postback',
-                  title: 'No!',
-                  payload: 'no'
-                }
-              ]
-            }
-          ]
-        }
-      }
+      text: `Sorry, I can only process text messages for now.`
     }
   }
 
   // Send the response message
   callSendAPI(senderPsid, response)
+
+  await sendTypingStatus(senderPsid, 'TYPING_OFF')
 }
 
 // Handles messaging_postbacks events
@@ -200,7 +212,7 @@ function handleIncoming(sender_psid, received_postback) {
 }
 
 // Sends response messages via the Send API
-function callSendAPI(senderPsid, response) {
+function callSendAPI(senderPsid, response, sender_action) {
   // The page access token we have generated in your app settings
   const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN
 
@@ -209,7 +221,8 @@ function callSendAPI(senderPsid, response) {
     recipient: {
       id: senderPsid
     },
-    message: response
+    message: response,
+    sender_action
   }
 
   // Send the HTTP request to the Messenger Platform
